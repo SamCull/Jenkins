@@ -14,7 +14,7 @@ pipeline {
                 // Use Maven to build the project and run tests
                 script {
                     def mvnHome = tool 'Maven'
-                    bat "${mvnHome}\\bin\\mvn clean test"
+                    bat "\"${mvnHome}\\bin\\mvn\" clean test"
                 }
             }
         }
