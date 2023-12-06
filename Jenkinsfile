@@ -12,15 +12,18 @@ pipeline {
         stage('Build and Test') {
             steps {
                 // Use Maven to build the project and run tests
-                sh 'mvn clean test'
+                script {
+                    def mavenHome = tool 'Maven'
+                    sh "${mavenHome}/bin/mvn clean test"
+                }
             }
         }
     }
 
     post {
         always {
-            // Archive the Maven surefire reports
-            junit '**/target/surefire-reports/TEST-*.xml'
+            // Archive the Maven Surefire reports
+            junit '**/target/surefire-reports/StudentTest-*.xml'
         }
     }
 }
