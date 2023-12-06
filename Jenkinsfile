@@ -1,33 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        MAVEN_HOME = tool 'Maven'
-        PATH = "$MAVEN_HOME/bin:$PATH"
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/SamCull/Jenkins.git']]])
+                // Checkout the code from the repository
+                checkout scm
             }
         }
 
         stage('Build and Test') {
             steps {
-                script {
-                    sh 'mvn clean test'
-                }
+                // Use Maven to build the project and run tests
+                sh 'mvn clean test'
             }
         }
     }
 
     post {
-        success {
-            echo 'Build and test successful!'
-        }
-        failure {
-            echo 'Build and test failed!'
+        always {
+            // Archive the Maven surefire reports
+            junit '**/target/surefire-reports/TEST-*.xml'
         }
     }
 }
