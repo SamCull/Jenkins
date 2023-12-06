@@ -4,32 +4,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/SamCull/Jenkins.git']]])
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 script {
-                    def mvnHome = tool 'Maven'
-                    bat "${mvnHome}/bin/mvn clean install"
+                    // Use the system-installed Maven
+                    sh 'mvn clean test'
                 }
             }
         }
+    }
 
-        stage('Test') {
-            steps {
-                script {
-                    def mvnHome = tool 'Maven'
-                    bat "${mvnHome}/bin/mvn test"
-                }
-            }
-
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
+    post {
+        success {
+            echo 'Build and test successful!'
+        }
+        failure {
+            echo 'Build and test failed!'
         }
     }
 }
