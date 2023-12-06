@@ -20,10 +20,10 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            // Archive the Maven Surefire reports
-            junit '**/target/surefire-reports/StudentTest-*.xml'
-        }
+post {
+    always {
+        junit 'surefire-reports/*.xml'
     }
+}
+
 }
