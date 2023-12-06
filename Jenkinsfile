@@ -14,7 +14,7 @@ pipeline {
                 // Use Maven to build the project and run tests
                 script {
                     def mvnHome = tool 'Maven'
-                    sh "\"${mvnHome}\\bin\\mvn\" clean test"
+                    bat "\"${mvnHome}\\bin\\mvn\" clean test"
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
     post {
         always {
             // Archive the Maven Surefire reports
-            junit '**/target/surefire-maven/test-*.xml'
+            junit '**/target/surefire-reports/StudentTest-*.xml'
         }
     }
 }
