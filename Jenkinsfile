@@ -1,29 +1,20 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/SamCull/Jenkins.git']]])
-            }
-        }
-
-        stage('Build and Test') {
-            steps {
-                script {
-                    // Use the system-installed Maven
-                    sh 'mvn clean test'
-                }
-            }
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
         }
     }
-
-    post {
-        success {
-            echo 'Build and test successful!'
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
         }
-        failure {
-            echo 'Build and test failed!'
+        stage('Test') { 
+            steps {
+                sh 'mvn test' 
+            }
         }
     }
 }
